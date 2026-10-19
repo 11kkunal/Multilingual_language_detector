@@ -4,8 +4,7 @@ A professional, fully-functional web app that detects spoken or written language
 
 ## Project Structure
 
-```
-p2_final/p2/p22/
+```Multilingual_language_detector
 ├── app.py                  # Flask backend — Whisper model + /detect endpoint
 ├── requirements.txt        # Python dependencies
 ├── templates/
