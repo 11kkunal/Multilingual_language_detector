@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lingua – Multilingual Voice Language Detector</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   LINGUA – Professional Multilingual Language Detector
+   Complete CSS Theme (Light + Dark, Responsive, Glassmorphism)
+   ═══════════════════════════════════════════════════════════════ */
+
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#f4f6fb;--bg2:#e9eefc;
+  --surface:rgba(255,255,255,.78);--solid:#fff;
+  --text:#0f172a;--muted:#64748b;--line:rgba(15,23,42,.09);
+  --a1:#4f46e5;--a2:#06b6d4;
+  --rec:#ef4444;--ok:#10b981;--warn:#f59e0b;
+  --shadow:0 10px 40px -12px rgba(30,41,99,.25)}
+
+/* ── Auto dark mode ── */
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0a0d18;--bg2:#121733;
+  --surface:rgba(24,29,52,.7);--solid:#171c33;
+  --text:#eef1ff;--muted:#8b93b5;--line:rgba(255,255,255,.08);
+  --a1:#818cf8;--a2:#22d3ee;
+  --shadow:0 10px 40px -12px rgba(0,0,0,.6)}}
+:root[data-theme="dark"]{
+  --bg:#0a0d18;--bg2:#121733;
+  --surface:rgba(24,29,52,.7);--solid:#171c33;
+  --text:#eef1ff;--muted:#8b93b5;--line:rgba(255,255,255,.08);
+  --a1:#818cf8;--a2:#22d3ee;
+  --shadow:0 10px 40px -12px rgba(0,0,0,.6)}
+
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+*{box-sizing:border-box}
+body{margin:0;min-height:100%;color:var(--text);
+  font:15px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(900px 500px at 15% -10%,color-mix(in srgb,var(--a1) 22%,transparent),transparent),
+    radial-gradient(800px 500px at 100% 0,color-mix(in srgb,var(--a2) 18%,transparent),transparent),
+    linear-gradient(var(--bg),var(--bg2));
+  background-attachment:fixed}
+button,select,textarea{font:inherit;color:inherit}
+
+/* ── Navbar ── */
+nav{max-width:1080px;margin:0 auto;padding:20px 22px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:1.15rem;letter-spacing:-.02em}
+.logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--a1),var(--a2));display:grid;place-items:center;color:#fff;font-size:1rem;box-shadow:0 6px 18px -4px var(--a1)}
+.right{display:flex;gap:10px;align-items:center}
+.pill{display:flex;align-items:center;gap:7px;font-size:.78rem;color:var(--muted);border:1px solid var(--line);background:var(--surface);backdrop-filter:blur(10px);border-radius:99px;padding:6px 12px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 25%,transparent)}
+.icon{border:1px solid var(--line);background:var(--surface);backdrop-filter:blur(10px);border-radius:10px;width:36px;height:36px;cursor:pointer;display:grid;place-items:center;font-size:1.1rem}
+
+/* ── Main container ── */
+main{max-width:1080px;margin:0 auto;padding:6px 22px 56px}
+
+/* ── Hero ── */
+.hero{text-align:center;margin:14px 0 26px}
+.hero h1{font-size:clamp(1.9rem,4.6vw,3rem);letter-spacing:-.035em;line-height:1.1;margin:0 0 10px;font-weight:800}
+.hero h1 span{background:linear-gradient(90deg,var(--a1),var(--a2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{margin:0 auto;max-width:560px;color:var(--muted);font-size:1.02rem}
+
+/* ── 2-column layout ── */
+.layout{display:grid;grid-template-columns:420px 1fr;gap:20px;align-items:start}
+@media(max-width:900px){.layout{grid-template-columns:1fr}}
+
+/* ── Card (glassmorphism) ── */
+.card{background:var(--surface);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:var(--shadow)}
+
+/* ── Mode switcher (Voice / Text) ── */
+.seg{display:grid;grid-template-columns:1fr 1fr;background:color-mix(in srgb,var(--muted) 12%,transparent);border-radius:12px;padding:4px;margin-bottom:20px}
+.seg button{border:0;background:transparent;padding:8px;border-radius:9px;cursor:pointer;font-weight:600;font-size:.88rem;color:var(--muted);transition:all .2s}
+.seg button.on{background:var(--solid);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.12)}
+
+/* ── Orb (mic button) ── */
+.orbwrap{display:grid;place-items:center;height:190px;position:relative}
+.ring{position:absolute;width:104px;height:104px;border-radius:50%;border:2px solid var(--a1);opacity:0}
+.listening .ring{animation:ringpulse 2.2s infinite}
+.listening .ring:nth-child(2){animation-delay:.7s}
+.listening .ring:nth-child(3){animation-delay:1.4s}
+@keyframes ringpulse{0%{transform:scale(1);opacity:.55}100%{transform:scale(2.1);opacity:0}}
+
+.orb{position:relative;z-index:2;width:104px;height:104px;border-radius:50%;border:0;cursor:pointer;color:#fff;
+  background:linear-gradient(135deg,var(--a1),var(--a2));
+  box-shadow:0 14px 34px -8px var(--a1);
+  transition:transform .15s,background .3s;display:grid;place-items:center}
+.orb:hover{transform:scale(1.05)}.orb:active{transform:scale(.96)}
+.listening .orb{background:linear-gradient(135deg,#f43f5e,var(--rec));box-shadow:0 14px 34px -8px var(--rec)}
+.orb svg{width:38px;height:38px}
+.processing .orb{background:linear-gradient(135deg,var(--warn),#f97316);box-shadow:0 14px 34px -8px var(--warn);animation:spin 1.5s linear infinite}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* ── Waveform bars ── */
+.wave{display:flex;gap:4px;align-items:center;justify-content:center;height:26px;margin:-6px 0 6px}
+.wave i{width:4px;height:6px;border-radius:3px;background:var(--a1);opacity:.35;transition:opacity .3s}
+.listening .wave i{animation:bar 1s ease-in-out infinite;opacity:1}
+@keyframes bar{50%{height:24px}}
+
+/* ── Status text ── */
+.status{text-align:center;color:var(--muted);font-size:.9rem;min-height:22px;transition:color .2s}
+.status b{color:var(--text)}
+
+/* ── Form fields ── */
+.field{margin-top:18px}
+label{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px;font-weight:600}
+select,textarea{width:100%;border:1px solid var(--line);background:var(--solid);border-radius:12px;padding:11px 13px;outline:0;transition:border .2s,box-shadow .2s}
+select:focus,textarea:focus{border-color:var(--a1);box-shadow:0 0 0 3px color-mix(in srgb,var(--a1) 22%,transparent)}
+textarea{min-height:150px;resize:vertical;font-size:1rem}
+
+/* ── Text-mode sample buttons ── */
+.samples{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.samples button{border:1px solid var(--line);background:var(--solid);border-radius:99px;padding:5px 12px;font-size:.78rem;cursor:pointer;color:var(--muted);transition:all .15s}
+.samples button:hover{color:var(--a1);border-color:var(--a1)}
+
+.hide{display:none!important}
+
+/* ── Results panel ── */
+.results{display:grid;gap:20px}
+
+/* ── Top: language + gauge ── */
+.top{display:grid;grid-template-columns:1fr 150px;gap:20px;align-items:center}
+@media(max-width:520px){.top{grid-template-columns:1fr}}
+.k{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin:0 0 8px}
+.lang{font-size:2.5rem;font-weight:800;letter-spacing:-.03em;line-height:1.1}
+.native{font-size:1.15rem;color:var(--muted);margin-top:3px}
+.tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}
+.tag{font-size:.75rem;font-weight:600;border-radius:8px;padding:3px 10px;background:color-mix(in srgb,var(--a1) 13%,transparent);color:var(--a1)}
+
+/* ── Confidence gauge (SVG ring) ── */
+.gauge{position:relative;width:140px;height:140px;margin:auto}
+.gauge svg{transform:rotate(-90deg)}
+.gauge circle{fill:none;stroke-width:11;stroke-linecap:round}
+.gauge .bg{stroke:var(--line)}
+.gauge .fg{stroke:url(#g);stroke-dasharray:327;stroke-dashoffset:327;transition:stroke-dashoffset .7s cubic-bezier(.2,.8,.2,1)}
+.gauge div{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.gauge strong{font-size:1.9rem;font-weight:800;letter-spacing:-.03em;line-height:1}
+.gauge small{color:var(--muted);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em}
+
+/* ── Transcript text ── */
+.tx{font-size:1.15rem;line-height:1.6;min-height:56px;overflow-wrap:anywhere;margin-top:10px}
+.tx .interim{color:var(--muted);font-style:italic}
+.ph{color:var(--muted)}
+
+/* ── Candidate language bars ── */
+.row{display:grid;grid-template-columns:120px 1fr 42px;gap:12px;align-items:center;margin:9px 0;font-size:.88rem}
+.row .t{height:7px;border-radius:99px;background:var(--line);overflow:hidden}
+.row .t i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--a1),var(--a2));transition:width .5s}
+.row b{text-align:right;font-variant-numeric:tabular-nums}
+
+/* ── History list ── */
+.hist{display:grid;gap:2px}
+.h{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:9px 6px;border-radius:10px;font-size:.88rem;cursor:pointer;transition:background .15s}
+.h:hover{background:color-mix(in srgb,var(--a1) 8%,transparent)}
+.h em{font-style:normal;font-weight:700;font-size:.72rem;border-radius:6px;padding:2px 8px;background:color-mix(in srgb,var(--a2) 18%,transparent);color:var(--a1)}
+.h span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)}
+.h b{font-variant-numeric:tabular-nums;font-size:.8rem}
+
+/* ── Actions bar ── */
+.acts{display:flex;justify-content:space-between;align-items:center}
+.btn{border:1px solid var(--line);background:var(--solid);border-radius:10px;padding:6px 13px;font-size:.8rem;cursor:pointer;font-weight:500;transition:all .15s}
+.btn:hover{border-color:var(--a1);color:var(--a1)}
+
+/* ── Stats tiles ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+@media(max-width:520px){.stats{grid-template-columns:repeat(2,1fr)}}
+.st{background:var(--solid);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.st small{display:block;color:var(--muted);font-size:.66rem;text-transform:uppercase;letter-spacing:.07em}
+.st b{font-size:.98rem}
+
+/* ── Confidence badges ── */
+.bd{display:inline-block;border-radius:99px;padding:3px 11px;font-size:.76rem;font-weight:700}
+.hi{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}
+.md{background:color-mix(in srgb,var(--warn) 20%,transparent);color:var(--warn)}
+.lo{background:color-mix(in srgb,var(--rec) 16%,transparent);color:var(--rec)}
+.mx{background:color-mix(in srgb,var(--a1) 15%,transparent);color:var(--a1)}
+
+/* ── Flags row ── */
+.flags{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
+input[type=range]{width:100%;accent-color:var(--a1)}
+
+/* ── Language coverage list ── */
+.cv{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.cv span{border:1px solid var(--line);background:var(--solid);border-radius:10px;padding:5px 11px;font-size:.82rem}
+.cv span small{color:var(--muted);margin-left:6px}
+.srch{margin-top:6px}
+
+footer{text-align:center;color:var(--muted);font-size:.78rem;margin-top:30px}
+</style>
+</head>
+
+<body>
+<!-- ═══════════════════ NAVBAR ═══════════════════ -->
+<nav>
+  <div class="brand"><div class="logo">文A</div>Lingua</div>
+  <div class="right">
+    <div class="pill"><span class="dot"></span>40+ languages · Whisper AI</div>
+    <button class="icon" id="theme" aria-label="Toggle theme">◐</button>
+  </div>
+</nav>
+
+<main>
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<section class="hero">
+  <h1>Detect any language,<br><span>instantly.</span></h1>
+  <p>Speak or paste text. Lingua identifies the language</p>
+</section>
+
+<div class="layout">
+  <!-- ═══════════ LEFT: Input Panel ═══════════ -->
+  <section class="card" id="panel">
+    <div class="seg">
+      <button class="on" data-m="voice">🎙 Voice</button>
+      <button data-m="text">⌨ Text</button>
+    </div>
+
+    <!-- Voice mode (MediaRecorder → Flask backend) -->
+    <div id="voice">
+      <div class="orbwrap" id="orbwrap">
+        <span class="ring"></span><span class="ring"></span><span class="ring"></span>
+        <button class="orb" id="orb" aria-label="Start or stop recording">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="3" width="6" height="11" rx="3"/>
+            <path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>
+          </svg>
+        </button>
+      </div>
+      <div class="wave"><i></i><i style="animation-delay:.1s"></i><i style="animation-delay:.2s"></i><i style="animation-delay:.3s"></i><i style="animation-delay:.2s"></i><i style="animation-delay:.1s"></i><i></i></div>
+      <div class="status" id="status">Tap the microphone to start</div>
+    </div>
+
+    <!-- Text mode (client-side detection) -->
+    <div id="textmode" class="hide">
+      <label for="ta">Text to analyze</label>
+      <textarea id="ta" placeholder="Paste or type text in any language…" spellcheck="false"></textarea>
+      <div class="samples" id="samples"></div>
+    </div>
+  </section>
+
+  <!-- ═══════════ RIGHT: Results Panel ═══════════ -->
+  <section class="results">
+    <!-- Detected language + gauge -->
+    <div class="card">
+      <div class="top">
+        <div>
+          <p class="k">Detected language</p>
+          <div class="lang" id="lang">—</div>
+          <div class="native" id="native">Waiting for input</div>
+          <div class="tags" id="tags"></div>
+        </div>
+        <div class="gauge">
+          <svg width="140" height="140" viewBox="0 0 120 120">
+            <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#6366f1"/>
+              <stop offset="1" stop-color="#06b6d4"/>
+            </linearGradient></defs>
+            <circle class="bg" cx="60" cy="60" r="52"/>
+            <circle class="fg" id="fg" cx="60" cy="60" r="52"/>
+          </svg>
+          <div><strong id="pct">0%</strong><small>Confidence</small></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recognized text -->
+    <div class="card">
+      <div class="acts">
+        <p class="k" style="margin:0">Recognized text</p>
+        <button class="btn" id="copy">Copy result</button>
+      </div>
+      <div class="tx ph" id="tx">Your transcript will appear here.</div>
+    </div>
+
+    <!-- Candidate languages -->
+    <div class="card">
+      <p class="k">Candidate languages</p>
+      <div id="alts"><div class="ph">No data yet.</div></div>
+    </div>
+
+    <!-- Analysis report -->
+    <div class="card">
+      <p class="k">Analysis report</p>
+      <div class="flags" id="flags"><span class="ph">Run a detection to see the report.</span></div>
+      <div class="stats" id="statsGrid"></div>
+      <div class="field">
+        <label for="th">Confidence threshold: <span id="thv">60</span>%</label>
+        <input type="range" id="th" min="30" max="95" value="60">
+      </div>
+    </div>
+
+    <!-- Recent detections -->
+    <div class="card">
+      <div class="acts">
+        <p class="k" style="margin:0">Recent detections</p>
+        <span>
+          <button class="btn" id="clearHist">Clear history</button>
+          <button class="btn" id="cj">Copy JSON</button>
+          <button class="btn" id="cc">Copy CSV</button>
+        </span>
+      </div>
+      <div class="hist" id="hist" style="margin-top:8px"><div class="ph">Nothing yet.</div></div>
+    </div>
+  </section>
+</div>
+
+<!-- Supported languages -->
+<section class="card" style="margin-top:20px">
+  <div class="acts">
+    <p class="k" style="margin:0">Supported languages · <span id="cn"></span></p>
+    <input class="srch" id="cs" placeholder="Search languages…"
+      style="max-width:240px;border:1px solid var(--line);background:var(--solid);border-radius:10px;padding:7px 11px;color:inherit;font:inherit;outline:0">
+  </div>
+  <div class="cv" id="cv"></div>
+</section>
+
+<footer>Lingua</footer>
+</main>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     JAVASCRIPT — Voice recording (MediaRecorder → Flask) +
+                  Text-mode client-side detection + Full UI wiring
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+'use strict';
+
+/* ── Helpers ── */
+const $=id=>document.getElementById(id);
+const esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+/* ── Language data ── */
+const N={en:['English','English'],es:['Spanish','Español'],fr:['French','Français'],de:['German','Deutsch'],it:['Italian','Italiano'],pt:['Portuguese','Português'],nl:['Dutch','Nederlands'],sv:['Swedish','Svenska'],tr:['Turkish','Türkçe'],id:['Indonesian','Bahasa Indonesia'],pl:['Polish','Polski'],ro:['Romanian','Română'],vi:['Vietnamese','Tiếng Việt'],ru:['Russian','Русский'],uk:['Ukrainian','Українська'],bg:['Bulgarian','Български'],ar:['Arabic','العربية'],fa:['Persian','فارسی'],ur:['Urdu','اردو'],he:['Hebrew','עברית'],el:['Greek','Ελληνικά'],hi:['Hindi','हिन्दी'],mr:['Marathi','मराठी'],ne:['Nepali','नेपाली'],bn:['Bengali','বাংলা'],pa:['Punjabi','ਪੰਜਾਬੀ'],gu:['Gujarati','ગુજરાતી'],ta:['Tamil','தமிழ்'],te:['Telugu','తెలుగు'],kn:['Kannada','ಕನ್ನಡ'],ml:['Malayalam','മലയാളം'],th:['Thai','ไทย'],ko:['Korean','한국어'],ja:['Japanese','日本語'],zh:['Chinese','中文'],ka:['Georgian','ქართული'],hy:['Armenian','Հայերেն'],und:['Unknown','—']};
+
+const FAM={en:'Germanic',de:'Germanic',nl:'Germanic',sv:'Germanic',es:'Romance',fr:'Romance',it:'Romance',pt:'Romance',ro:'Romance',ru:'Slavic',uk:'Slavic',bg:'Slavic',pl:'Slavic',hi:'Indo-Aryan',mr:'Indo-Aryan',ne:'Indo-Aryan',bn:'Indo-Aryan',pa:'Indo-Aryan',gu:'Indo-Aryan',ur:'Indo-Aryan',ta:'Dravidian',te:'Dravidian',kn:'Dravidian',ml:'Dravidian',ar:'Semitic',he:'Semitic',fa:'Iranian',tr:'Turkic',ja:'Japonic',ko:'Koreanic',zh:'Sinitic',th:'Kra-Dai',vi:'Austroasiatic',id:'Austronesian',el:'Hellenic',ka:'Kartvelian',hy:'Armenian'};
+
+/* ── Client-side text detection (for Text mode) ── */
+const SCR=[['Latin',/[A-Za-z\u00C0-\u024F\u1E00-\u1EFF]/g],['Cyrillic',/[\u0400-\u04FF]/g],['Arabic',/[\u0600-\u06FF]/g],['Hebrew',/[\u0590-\u05FF]/g],['Greek',/[\u0370-\u03FF]/g],['Devanagari',/[\u0900-\u097F]/g],['Bengali',/[\u0980-\u09FF]/g],['Gurmukhi',/[\u0A00-\u0A7F]/g],['Gujarati',/[\u0A80-\u0AFF]/g],['Tamil',/[\u0B80-\u0BFF]/g],['Telugu',/[\u0C00-\u0C7F]/g],['Kannada',/[\u0C80-\u0CFF]/g],['Malayalam',/[\u0D00-\u0D7F]/g],['Thai',/[\u0E00-\u0E7F]/g],['Hangul',/[\uAC00-\uD7AF]/g],['Kana',/[\u3040-\u30FF]/g],['Han',/[\u4E00-\u9FFF]/g],['Georgian',/[\u10A0-\u10FF]/g],['Armenian',/[\u0530-\u058F]/g]];
+
+const DIR_MAP={Bengali:'bn',Gurmukhi:'pa',Gujarati:'gu',Tamil:'ta',Telugu:'te',Kannada:'kn',Malayalam:'ml',Thai:'th',Hangul:'ko',Kana:'ja',Georgian:'ka',Armenian:'hy',Greek:'el',Hebrew:'he'};
+
+const SW={en:'the and is of to in that it for with this are was you not have be on as at but',es:'el la de que y en los es un una por con para no se las del al lo como más',fr:'le la les de des et est un une que pour pas dans vous je il nous sur avec ce qui',de:'der die das und ist nicht ein ich zu mit den auf für von dem sie auch sich',it:'il di che e la un per non sono con una gli le del della ma anche più',pt:'o de que e do da em um para não com uma os as se mais mas você',nl:'de het een en van ik te dat niet is op voor met zijn maar ook',sv:'och att det är som en på jag inte för med har den av',tr:'ve bir bu için ile değil çok ben ne var daha gibi çünkü',id:'yang dan di itu dengan untuk tidak ini dari saya akan pada juga ke',pl:'i w nie to się na jest że z do jak ale co tak',ro:'și de în nu este pe cu un care să la pentru mai sau',vi:'và của là có không một những được cho trong với này',ru:'и в не на что это он с как я по но они к у',uk:'і в не на що це він з як я по але вони до у та',bg:'и в не на че това той с как аз по но те към се да са',ar:'في من على أن هذا هو ما لا إلى مع كان التي هذه',fa:'و در به از که این را با است برای آن یک',ur:'اور کے میں کی ہے سے کو پر یہ نہیں کا',hi:'है के में की को और से का यह पर नहीं हैं था एक',mr:'आहे आणि ला मध्ये ची चा चे नाही हे या',ne:'छ हो र को मा हरू लाई बाट यो पनि'};
+const SWS={};for(const k in SW)SWS[k]=new Set(SW[k].split(' '));
+
+const CH={es:'ñ¿¡',de:'ßäöü',pt:'ãõç',fr:'àâçèéêëîïôûœ',pl:'łąęćńśźż',ro:'ăâîșț',tr:'ıİğş',sv:'åäö',vi:'ăơưđạảấầẩẫậắằẳẵặẹẻẽếềểễệ',fa:'پچژگ',ur:'ٹڈڑںے',uk:'іїєґ',ru:'ыэёъ'};
+const LAT=['en','es','fr','de','it','pt','nl','sv','tr','id','pl','ro','vi'];
+const GRP={Cyrillic:['ru','uk','bg'],Arabic:['ar','fa','ur'],Devanagari:['hi','mr','ne']};
+
+const softmax=(o,k)=>{const e=Object.keys(o),m=Math.max(...e.map(x=>o[x])),s=e.reduce((a,x)=>a+Math.exp(k*(o[x]-m)),0),r={};e.forEach(x=>r[x]=Math.exp(k*(o[x]-m))/s);return r};
+
+function detectText(t){
+  let b=['Other',0],c={};
+  for(const[n,r]of SCR){const v=(t.match(r)||[]).length;c[n]=v;if(v>b[1])b=[n,v]}
+  if(c.Kana>0&&c.Han>0)b=['Kana',1];
+  const sc=b[0];
+  if(!b[1])return{script:'\u2014',p:{und:1}};
+  if(DIR_MAP[sc])return{script:sc,p:{[DIR_MAP[sc]]:.99}};
+  if(sc==='Han')return{script:sc,p:{zh:.97,ja:.03}};
+  const cand=sc==='Latin'?LAT:GRP[sc];
+  if(!cand)return{script:sc,p:{und:1}};
+  const w=t.toLowerCase().match(/\p{L}+/gu)||[],s={};
+  cand.forEach(l=>{let h=0;w.forEach(x=>{if(SWS[l]&&SWS[l].has(x))h++});let k=0;if(CH[l])for(const ch of t.toLowerCase())if(CH[l].includes(ch))k++;s[l]=h/Math.max(w.length,1)*6+Math.min(k,6)*.6+(l==='en'&&sc==='Latin'?.05:0)});
+  if(Object.values(s).every(v=>v<.3)){if(sc==='Latin')return{script:sc,p:{und:1}};s[cand[0]]+=.5}
+  return{script:sc,p:softmax(s,2.6)}
+}
+
+/* ── State ── */
+let cur=null;
+const hist=[];
+let mediaRecorder=null;
+let audioChunks=[];
+let listening=false;
+let processing=false;
+
+/* ═══════════ UI Update Functions ═══════════ */
+
+function tile(k,v){return '<div class="st"><small>'+k+'</small><b>'+v+'</b></div>'}
+
+function updateUI(data){
+  /* data: {text, language, language_code, native, confidence (0-100), script, family, latency_ms, source} */
+  const p=data.confidence/100;
+  const l=data.language_code||'und';
+  const nm=N[l]||[data.language||'Unknown',data.native||'\u2014'];
+
+  cur={time:new Date().toISOString(),text:data.text,language:l,name:data.language||nm[0],confidence:+(p).toFixed(3),script:data.script||'\u2014',source:data.source||'server'};
+
+  /* Language + native name */
+  $('lang').textContent=data.language||nm[0];
+  $('native').textContent=data.native||nm[1];
+  $('tags').innerHTML='<span class="tag">ISO '+l+'</span><span class="tag">'+(data.script||'\u2014')+'</span>';
+
+  /* Confidence gauge */
+  $('pct').textContent=Math.round(p*100)+'%';
+  $('fg').style.strokeDashoffset=327*(1-p);
+
+  /* Transcript */
+  $('tx').className='tx';
+  $('tx').innerHTML=data.interim?'<span class="interim">'+esc(data.text)+'</span>':esc(data.text||'(no speech detected)');
+
+  /* Candidate languages */
+  if(data.alternatives){
+    $('alts').innerHTML=data.alternatives.map(function(a){return '<div class="row"><span>'+esc(a[0])+'</span><span class="t"><i style="width:'+a[1]+'%"></i></span><b>'+Math.round(a[1])+'%</b></div>'}).join('');
+  }else{
+    $('alts').innerHTML='<div class="row"><span>'+esc(data.language||nm[0])+'</span><span class="t"><i style="width:'+(p*100)+'%"></i></span><b>'+Math.round(p*100)+'%</b></div>';
+  }
+
+  /* Stats */
+  var text=data.text||'';
+  var words=(text.match(/\p{L}+/gu)||[]).length;
+  var sents=(text.match(/[^.!?\u0964\u06D4\u3002\uFF01\uFF1F\n]+/g)||[]).map(function(x){return x.trim()}).filter(function(x){return x.length>1});
+  var th=+$('th').value/100;
+  var lv=p>=Math.max(th,.85)?['hi','High confidence']:p>=th?['md','Medium confidence']:['lo','Below threshold \u2013 add more text'];
+  var rtl=['Arabic','Hebrew'].includes(data.script);
+  $('flags').innerHTML='<span class="bd '+lv[0]+'">'+lv[1]+'</span>'+'<span class="bd mx">'+(data.source==='client'?'Client-side detection':'Whisper AI · server-side')+'</span>';
+  $('statsGrid').innerHTML=tile('Characters',text.length)+tile('Words',words)+tile('Sentences',sents.length)+tile('Script',data.script||'\u2014')+tile('Direction',rtl?'Right-to-left':'Left-to-right')+tile('Family',data.family||FAM[l]||'\u2014')+tile('Latency',data.latency_ms?data.latency_ms.toFixed(0)+' ms':'\u2014')+tile('Engine',data.source==='client'?'Rule-based \xb7 local':'Whisper v2 \xb7 server');
+}
+
+function addHistory(d){
+  hist.unshift(cur);hist.splice(2);drawHist();
+}
+function drawHist(){
+  $('hist').innerHTML=hist.map(function(h,i){return '<div class="h" data-i="'+i+'"><em>'+h.language.toUpperCase()+'</em><span>'+esc(h.text)+'</span><b>'+Math.round(h.confidence*100)+'%</b></div>'}).join('')||'<div class="ph">Nothing yet.</div>';
+}
+
+/* ═══════════ VOICE MODE (MediaRecorder → Flask /detect) ═══════════ */
+
+function setS(h){$('status').innerHTML=h}
+
+function startRecording(){
+  if(processing)return;
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+    mediaRecorder=new MediaRecorder(stream);
+    audioChunks=[];
+
+    mediaRecorder.ondataavailable=function(e){audioChunks.push(e.data)};
+
+    mediaRecorder.onstart=function(){
+      listening=true;
+      $('orbwrap').parentElement.classList.add('listening');
+      $('orbwrap').parentElement.classList.remove('processing');
+      setS('<b>Listening\u2026</b> speak now, then tap again to stop');
+    };
+
+    mediaRecorder.onstop=function(){
+      listening=false;
+      processing=true;
+      $('orbwrap').parentElement.classList.remove('listening');
+      $('orbwrap').parentElement.classList.add('processing');
+      setS('\u23F3 <b>Processing\u2026</b> detecting language with Whisper AI');
+
+      /* Stop microphone tracks */
+      stream.getTracks().forEach(function(t){t.stop()});
+
+      /* Build form data and send to Flask */
+      var blob=new Blob(audioChunks,{type:'audio/wav'});
+      var fd=new FormData();
+      fd.append('audio',blob,'audio.wav');
+
+      fetch('/detect',{method:'POST',body:fd})
+        .then(function(r){return r.json()})
+        .then(function(data){
+          processing=false;
+          $('orbwrap').parentElement.classList.remove('processing');
+          if(data.error){
+            setS('\u274C Error: '+esc(data.error));
+            return;
+          }
+          data.source='server';
+          updateUI(data);
+          addHistory();
+          setS('\u2705 <b>Detection complete</b> \u2014 tap the microphone to try again');
+        })
+        .catch(function(e){
+          processing=false;
+          $('orbwrap').parentElement.classList.remove('processing');
+          setS('\u274C Could not connect to server. Is Flask running?');
+        });
+    };
+
+    mediaRecorder.start();
+  }).catch(function(err){
+    setS('\u274C Microphone access blocked. Allow it in your browser settings.');
+  });
+}
+
+function stopRecording(){
+  if(mediaRecorder&&mediaRecorder.state!=='inactive'){
+    mediaRecorder.stop();
+  }
+}
+
+$('orb').onclick=function(){
+  if(processing)return;
+  if(listening){stopRecording()}else{startRecording()}
+};
+
+/* ═══════════ TEXT MODE (client-side detection) ═══════════ */
+
+var sampleTexts={
+  'English':'Thank you so much for your help, this is exactly what we were looking for.',
+  'Español':'Me encanta este lugar, la comida es deliciosa y el servicio es excelente.',
+  'Français':'Nous avons passé une très bonne soirée dans le jardin avec tous nos amis.',
+  'हिन्दी':'मुझे यह जगह बहुत पसंद है और यहाँ का मौसम बहुत अच्छा है।',
+  '日本語':'今日はとても良い天気ですね。散歩に行きましょう。',
+  'العربية':'مرحبا بكم في موقعنا، نحن هنا من أجل مساعدتكم.',
+  'Русский':'Я не знаю, что это такое, но это очень интересно.',
+  'বাংলা':'আমি বাংলায় কথা বলি এবং এটা আমার মাতৃভাষা।',
+  'اردو':'میں اردو بولتا ہوں اور یہ ایک خوبصورت زبان ہے۔'
+};
+
+$('samples').innerHTML=Object.keys(sampleTexts).map(function(k){return '<button>'+k+'</button>'}).join('');
+$('samples').onclick=function(e){
+  if(e.target.tagName==='BUTTON'){
+    $('ta').value=sampleTexts[e.target.textContent];
+    runTextDetection($('ta').value,true);
+  }
+};
+
+var debounceTimer;
+$('ta').oninput=function(){
+  clearTimeout(debounceTimer);
+  debounceTimer=setTimeout(function(){runTextDetection($('ta').value,false)},150);
+};
+$('ta').onchange=function(){runTextDetection($('ta').value,true)};
+
+function runTextDetection(text,isFinal){
+  if(!text.trim())return;
+  var t0=performance.now();
+  var d=detectText(text);
+  var lat=performance.now()-t0;
+  var rk=Object.entries(d.p).sort(function(a,b){return b[1]-a[1]});
+  var l=rk[0][0],p=rk[0][1];
+  var nm=N[l]||N.und;
+
+  var alts=rk.slice(0,5).map(function(a){return [(N[a[0]]||N.und)[0],Math.round(a[1]*100)]});
+
+  updateUI({
+    text:text,
+    language:nm[0],
+    language_code:l,
+    native:nm[1],
+    confidence:Math.round(p*100),
+    script:d.script,
+    family:FAM[l]||'\u2014',
+    latency_ms:lat,
+    source:'client',
+    alternatives:alts,
+    interim:!isFinal
+  });
+  if(isFinal)addHistory();
+}
+
+/* ═══════════ MODE SWITCH ═══════════ */
+
+document.querySelectorAll('.seg button').forEach(function(b){
+  b.onclick=function(){
+    document.querySelectorAll('.seg button').forEach(function(x){x.classList.toggle('on',x===b)});
+    var isVoice=b.dataset.m==='voice';
+    $('voice').classList.toggle('hide',!isVoice);
+    $('textmode').classList.toggle('hide',isVoice);
+    if(!isVoice&&listening)stopRecording();
+  };
+});
+
+/* ═══════════ THRESHOLD SLIDER ═══════════ */
+$('th').oninput=function(){$('thv').textContent=$('th').value;if(cur)updateUI({text:cur.text,language:cur.name,language_code:cur.language,native:(N[cur.language]||N.und)[1],confidence:Math.round(cur.confidence*100),script:cur.script,family:FAM[cur.language]||'\u2014',source:cur.source})};
+
+/* ═══════════ HISTORY CLICK ═══════════ */
+$('hist').onclick=function(e){
+  var r=e.target.closest('.h');
+  if(r){
+    var h=hist[r.dataset.i];
+    updateUI({text:h.text,language:h.name,language_code:h.language,native:(N[h.language]||N.und)[1],confidence:Math.round(h.confidence*100),script:h.script,family:FAM[h.language]||'\u2014',source:h.source||'server'});
+  }
+};
+
+/* ═══════════ COPY BUTTONS ═══════════ */
+function copyBtn(btn,txt,label){
+  if(!hist.length&&!cur)return;
+  navigator.clipboard.writeText(txt).then(function(){btn.textContent='Copied \u2713'}).catch(function(){btn.textContent='Unavailable'});
+  setTimeout(function(){btn.textContent=label},1400);
+}
+
+$('copy').onclick=function(){if(!cur)return;copyBtn($('copy'),JSON.stringify(cur,null,2),'Copy result')};
+$('cj').onclick=function(){copyBtn($('cj'),JSON.stringify(hist,null,2),'Copy JSON')};
+$('cc').onclick=function(){
+  var q=function(s){return '"'+String(s).replace(/"/g,'""')+'"'};
+  var csv='time,text,language,iso,confidence,script\n'+hist.map(function(h){return [h.time,h.text,h.name,h.language,h.confidence,h.script].map(q).join(',')}).join('\n');
+  copyBtn($('cc'),csv,'Copy CSV');
+};
+
+/* ═══════════ CLEAR HISTORY ═══════════ */
+$('clearHist').onclick=function(){
+  hist.splice(0);
+  cur=null;
+  drawHist();
+  $('clearHist').textContent='Cleared ✓';
+  setTimeout(function(){$('clearHist').textContent='Clear history'},1400);
+};
+
+/* ═══════════ LANGUAGE COVERAGE ═══════════ */
+function renderCoverage(q){
+  q=q||'';
+  var a=Object.keys(N).filter(function(k){return k!=='und'&&(N[k][0]+N[k][1]+k).toLowerCase().indexOf(q.toLowerCase())>=0});
+  $('cn').textContent=a.length+' languages';
+  $('cv').innerHTML=a.map(function(k){return '<span>'+N[k][0]+' <small>'+N[k][1]+' \xb7 '+k+'</small></span>'}).join('')||'<span class="ph">No match</span>';
+}
+$('cs').oninput=function(e){renderCoverage(e.target.value)};
+renderCoverage();
+
+/* ═══════════ THEME TOGGLE ═══════════ */
+$('theme').onclick=function(){
+  var d=document.documentElement;
+  var isDark=getComputedStyle(d).getPropertyValue('--bg').trim()==='#0a0d18';
+  d.dataset.theme=isDark?'light':'dark';
+};
+
+/* ═══════════ INITIAL STATS ═══════════ */
+$('statsGrid').innerHTML=tile('Characters','\u2014')+tile('Words','\u2014')+tile('Sentences','\u2014')+tile('Script','\u2014')+tile('Direction','\u2014')+tile('Family','\u2014')+tile('Latency','\u2014')+tile('Engine','Whisper v2 \xb7 server');
+
+})();
+</script>
+</body>
+</html>

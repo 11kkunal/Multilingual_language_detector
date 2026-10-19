@@ -1,0 +1,101 @@
+/* Soothing pastel gradient background */
+body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+    color: #333;
+    text-align: center;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+/* Ensure container is centered and responsive */
+.container {
+    padding-top: 30px;
+    width: 90%;
+    max-width: 800px;
+}
+
+h1 {
+    margin-bottom: 20px;
+    font-size: 2.2rem;
+    color: #222;
+    font-weight: 600;
+}
+
+/* Mic button styles with gentle colors */
+.mic-btn, .stop-btn {
+    font-size: 28px;
+    padding: 18px;
+    margin: 10px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.3s;
+    color: #fff;
+}
+
+.mic-btn {
+    background-color: #4a90e2;
+}
+
+.mic-btn:hover {
+    background-color: #357ab8;
+    transform: scale(1.05);
+}
+
+.mic-btn.recording {
+    animation: pulse 1s infinite;
+}
+
+.stop-btn {
+    background-color: #d9534f;
+}
+
+.stop-btn:hover {
+    background-color: #c12e2a;
+    transform: scale(1.05);
+}
+
+.stop-btn.recording {
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(74,144,226, 0.7); }
+    70% { box-shadow: 0 0 0 20px rgba(74,144,226, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(74,144,226, 0); }
+}
+
+.status {
+    margin: 15px;
+    font-size: 1rem;
+    opacity: 0.85;
+    color: #555;
+}
+
+.card {
+    background: rgba(255,255,255,0.8);
+    margin: 15px auto;
+    padding: 20px;
+    width: 100%;
+    max-width: 600px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    color: #333;
+}
+
+.card h3 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    color: #222;
+}
+
+.card p {
+    font-size: 1rem;
+    color: #444;
+    margin: 0;
+}
