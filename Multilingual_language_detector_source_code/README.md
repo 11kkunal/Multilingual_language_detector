@@ -1,10 +1,8 @@
 # Lingua – Multilingual Language Detector
 
-A professional, fully-functional web app that detects spoken or written language using **OpenAI Whisper** (via `faster-whisper`) on the backend and a **real-time client-side engine** for text input.
+A professional, fully-functional web app that detects spoken or written language.
 
----
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 p2_final/p2/p22/
@@ -19,24 +17,24 @@ p2_final/p2/p22/
 
 ---
 
-## ✨ Features
+## Features
 
 | Feature | Description |
 |---|---|
-| 🎙 **Voice detection** | Records audio via browser MediaRecorder → sends to Flask → Whisper large-v2 detects language |
-| ⌨ **Text detection** | Real-time client-side detection using Unicode script analysis + stopword matching |
-| 🌍 **40+ languages** | English, Hindi, Bengali, Urdu, Arabic, French, German, Japanese, Chinese, Russian, and more |
-| 📊 **Confidence gauge** | Animated SVG ring showing detection confidence percentage |
-| 📈 **Candidate bar chart** | Top-5 language candidates with visual probability bars |
-| 🔬 **Analysis report** | Word/character/sentence count, script, text direction, language family, latency |
-| 🕓 **Recent detections** | Last 2 detections, clickable to replay, with Clear / Copy JSON / Copy CSV |
-| 🌓 **Dark / Light mode** | Auto-detects system preference + manual toggle |
-| 📱 **Fully responsive** | Works on mobile, tablet, and desktop |
-| 🔍 **Language browser** | Searchable list of all 36+ supported languages |
+|  **Voice detection** | Records audio via browser MediaRecorder → sends to Flask → Whisper large-v2 detects language |
+|  **Text detection** | Real-time client-side detection using Unicode script analysis + stopword matching |
+|  **40+ languages** | English, Hindi, Bengali, Urdu, Arabic, French, German, Japanese, Chinese, Russian, and more |
+|  **Confidence gauge** | Animated SVG ring showing detection confidence percentage |
+|  **Candidate bar chart** | Top-5 language candidates with visual probability bars |
+|  **Analysis report** | Word/character/sentence count, script, text direction, language family, latency |
+|  **Recent detections** | Last 2 detections, clickable to replay, with Clear / Copy JSON / Copy CSV |
+|  **Dark / Light mode** | Auto-detects system preference + manual toggle |
+| **Fully responsive** | Works on mobile, tablet, and desktop |
+|  **Language browser** | Searchable list of all 36+ supported languages |
 
 ---
 
-## 🛠 Requirements
+## Requirements
 
 - Python 3.10 or higher
 - pip (Python package manager)
@@ -46,7 +44,7 @@ p2_final/p2/p22/
 
 ---
 
-## 🚀 Setup & Installation
+## Setup & Installation
 
 ### 1. Install Python dependencies
 
@@ -76,7 +74,7 @@ Navigate to: **http://127.0.0.1:5000**
 
 ---
 
-## 🧪 How to Use
+## How to Use
 
 ### Voice Mode (🎙)
 1. Open the app in your browser
@@ -87,15 +85,15 @@ Navigate to: **http://127.0.0.1:5000**
 6. Wait a few seconds — Whisper AI will process the audio
 7. Results appear: detected language, confidence, transcript, and analysis
 
-### Text Mode (⌨)
-1. Click the **"⌨ Text"** tab
+### Text Mode 
+1. Click the Text tab
 2. Type or paste text in any language
 3. Results update **in real time** as you type
 4. Use the **sample buttons** (English, Hindi, Arabic, etc.) to test quickly
 
 ---
 
-## 🔧 Backend API
+## Backend API
 
 ### `GET /`
 Returns the main page (`index.html`).
@@ -130,7 +128,7 @@ Detects the language of an uploaded audio file.
 
 ---
 
-## 📦 Dependencies
+## Dependencies
 
 | Package | Version | Purpose |
 |---|---|---|
@@ -141,7 +139,7 @@ Detects the language of an uploaded audio file.
 
 ---
 
-## ⚠️ Troubleshooting
+## Troubleshooting
 
 ### `av` fails to build
 Make sure **Microsoft C++ Build Tools** are installed with the **"Desktop development with C++"** workload. Then re-run `pip install -r requirements.txt` in a **new terminal window**.
@@ -160,7 +158,7 @@ On first run, Whisper will **automatically download** the `large-v2` model weigh
 
 ---
 
-## 🏗 Architecture
+## Architecture
 
 ```
 Browser
@@ -186,13 +184,13 @@ Browser
 
 ---
 
-## 🌐 Supported Languages (36+)
+##  Supported Languages (36+)
 
 English · Spanish · French · German · Italian · Portuguese · Dutch · Swedish · Turkish · Indonesian · Polish · Romanian · Vietnamese · Russian · Ukrainian · Bulgarian · Arabic · Persian · Urdu · Hebrew · Greek · Hindi · Marathi · Nepali · Bengali · Punjabi · Gujarati · Tamil · Telugu · Kannada · Malayalam · Thai · Korean · Japanese · Chinese · Georgian · Armenian
 
 ---
 
-## 📄 License
+## License
 
 This project is for educational purposes (End Semester Project).
 
